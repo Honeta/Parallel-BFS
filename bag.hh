@@ -12,7 +12,7 @@ public:
         _root->_val = val;
         _size = 1;
     }
-    operator bool() const { return _root != nullptr; }
+    operator bool() const { return _size > 0; }
     unsigned size() const { return _size; }
     pennant union_with(pennant src) {
         _size += src._size;
@@ -31,7 +31,7 @@ public:
     }
     vector<int> content() {
         vector<int> ans;
-        dfs(_root, ans);
+        if (_root) dfs(_root, ans);
         return ans;
     }
 private:
@@ -50,6 +50,7 @@ private:
 
 class bag {    
 public:
+    static const unsigned BAGNUM = 30;
     void insert(pennant x) {
         int k;
         for (k = 0; _item[k]; ++k) {
@@ -60,7 +61,7 @@ public:
     }
     void union_with(bag src) {
         pennant carry;
-        for (int k = 0; k < 10; ++k) {
+        for (int k = 0; k < BAGNUM; ++k) {
             if (!_item[k] && src._item[k] && !carry) {
                 _item[k] = src._item[k];
             } else if (!_item[k] && !src._item[k] && carry) {
@@ -79,13 +80,13 @@ public:
     }
     unsigned size() const {
         unsigned ans = 0;
-        for (int k = 0; k < 10; ++k)
+        for (int k = 0; k < BAGNUM; ++k)
             ans += _item[k].size();
         return ans;
     }
     pennant &operator [](int k) { return _item[k]; }
 private:
-    pennant _item[10];
+    pennant _item[BAGNUM];
 };
 
 #endif
