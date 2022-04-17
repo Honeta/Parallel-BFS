@@ -6,18 +6,18 @@ using namespace std;
 
 class pennant {
 public:
-    pennant() = default;
-    pennant(int val) {
-        _root = new node;
-        _root->_val = val;
-        _size = 1;
-    }
+    pennant(): _root(nullptr), _size(0){}
+    pennant(int val): _root(new node), _size(1){ _root->_val = val; }
     operator bool() const { return _size > 0; }
     unsigned size() const { return _size; }
     pennant union_with(pennant src) {
         _size += src._size;
-        src._root->_right = _root->_left;
-        _root->_left = src._root;
+        if (!_root) {
+            _root = src._root;
+        } else {
+            src._root->_right = _root->_left;
+            _root->_left = src._root;
+        }
         return *this;
     }
     pennant split() {
@@ -48,11 +48,11 @@ private:
     }
 };
 
-class bag {    
+class bag {
 public:
     static const unsigned BAGNUM = 30;
     void insert(pennant x) {
-        int k;
+        unsigned k;
         for (k = 0; _item[k]; ++k) {
             x = _item[k].union_with(x);
             _item[k] = pennant();
@@ -61,12 +61,12 @@ public:
     }
     void union_with(bag src) {
         pennant carry;
-        for (int k = 0; k < BAGNUM; ++k) {
+        for (unsigned k = 0; k < BAGNUM; ++k) {
             if (!_item[k] && src._item[k] && !carry) {
                 _item[k] = src._item[k];
             } else if (!_item[k] && !src._item[k] && carry) {
-                carry = pennant();
                 _item[k] = carry;
+                carry = pennant();
             } else if (_item[k] && src._item[k] && !carry) {
                 carry = _item[k].union_with(src._item[k]);
                 _item[k] = pennant();
@@ -80,7 +80,7 @@ public:
     }
     unsigned size() const {
         unsigned ans = 0;
-        for (int k = 0; k < BAGNUM; ++k)
+        for (unsigned k = 0; k < BAGNUM; ++k)
             ans += _item[k].size();
         return ans;
     }
