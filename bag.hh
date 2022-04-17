@@ -2,12 +2,13 @@
 #define _BAG_HH
 
 #include <vector>
+
 using namespace std;
 
 class pennant {
 public:
     pennant(): _root(nullptr), _size(0){}
-    pennant(int val): _root(new node), _size(1){ _root->_val = val; }
+    pennant(int val): _root(new node{val, nullptr, nullptr}), _size(1){}
     operator bool() const { return _size > 0; }
     unsigned size() const { return _size; }
     pennant union_with(pennant src) {
